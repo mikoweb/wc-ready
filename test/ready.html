@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>WCReady tests</title>
+    <script src="../index.js"></script>
+    <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <link rel="import" href="../bower_components/paper-input/paper-input.html">
+</head>
+<body>
+    <test-fixture id="Fixture">
+        <template></template>
+    </test-fixture>
+    <script>
+        var ready = false;
+        var delayedReady = false;
+        var element = null;
+
+        suite('WCReady', function () {
+            test('WebComponentsReady', function (done) {
+                var interval = setInterval(function () {
+                    if (ready && delayedReady) {
+                        clearInterval(interval);
+                        assert.isNotNull(element);
+                        assert.equal('PAPER-INPUT', element.tagName);
+                        assert.isDefined(element.shadowRoot);
+                        assert.isNotNull(element.shadowRoot.querySelector('input'));
+                        assert.equal('INPUT', element.shadowRoot.querySelector('input').tagName);
+                        done();
+                    }
+                }, 50);
+            });
+        });
+    </script>
+    <script>
+        WCReady(function () {
+            ready = true;
+            element = document.getElementById('el');
+        });
+
+        setTimeout(function () {
+            delayedReady = true;
+        }, 200);
+    </script>
+    <paper-input always-float-label label="Floating label" id="el"></paper-input>
+</body>
+</html>
